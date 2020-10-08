@@ -8,16 +8,16 @@ function CalculadoraService() {
     let resultado;
 
     switch (op) {
-      case SOMA:
+      case "+":
         resultado = num1 + num2;
         break;
-      case SUBTRAIR:
+      case "-":
         resultado = num1 - num2;
         break;
-      case MULTI:
+      case "*":
         resultado = num1 * num2;
         break;
-      case DIVISAO:
+      case "/":
         resultado = num1 / num2;
         break;
       default:

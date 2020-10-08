@@ -4,23 +4,45 @@ import { Jumbotron, Container, Row, Col, Button, Form } from "react-bootstrap";
 import CalculadoraService from "./calculadora.service";
 
 function Calculadora() {
-  const [calcular] = CalculadoraService();
+  const [calcular, SOMA, SUBTRAIR, DIVISAO, MULTI] = CalculadoraService();
 
   const [txtNumeros, setTxtNumeros] = useState("0");
+  const [number1, setNumber1] = useState(0);
+  const [number2, setNumber2] = useState(null);
+  const [operacao, setOperacao] = useState(null);
 
   function addNumber(event) {
     let number = event.target.textContent;
-    if (txtNumeros == "0" && !isNaN(parseFloat(number)))
+    if (txtNumeros === "0" && !isNaN(parseFloat(number)))
       return setTxtNumeros(number);
-    if (txtNumeros == "0" && number == ".") return setTxtNumeros("0" + number);
-    if (number == "." && txtNumeros.split("").indexOf(".") > -1)
+    if (txtNumeros === "0" && number === ".")
+      return setTxtNumeros("0" + number);
+    if (number === "." && txtNumeros.split("").indexOf(".") > -1)
       return setTxtNumeros(txtNumeros);
     return setTxtNumeros(txtNumeros + number);
   }
 
-  function defineOperation(event) {
-    let op = event.target.textContent;
-    return setTxtNumeros(txtNumeros + op);
+  function setOperator(op) {
+    if (op === "=" && operacao) {
+      let result = calcular(number1, parseFloat(txtNumeros), operacao);
+      return setTxtNumeros(result);
+    } else {
+      setOperacao(op);
+      setNumber1(parseFloat(txtNumeros));
+      setTxtNumeros("0");
+    }
+  }
+
+  function sendResult() {
+    let result = calcular(number1, number2, operacao);
+    setTxtNumeros(result);
+    return setOperacao(null);
+  }
+
+  function btnClear() {
+    setTxtNumeros("0");
+    setNumber1("0");
+    setNumber2(null);
   }
 
   return (
@@ -37,7 +59,7 @@ function Calculadora() {
         <Container>
           <Row>
             <Col xs="3">
-              <Button variant="danger" onClick={() => setTxtNumeros("0")}>
+              <Button variant="danger" onClick={btnClear}>
                 C
               </Button>
             </Col>
@@ -70,7 +92,7 @@ function Calculadora() {
               </Button>
             </Col>
             <Col>
-              <Button variant="warning" onClick={addNumber}>
+              <Button variant="warning" onClick={() => setOperator(DIVISAO)}>
                 /
               </Button>
             </Col>
@@ -93,7 +115,7 @@ function Calculadora() {
               </Button>
             </Col>
             <Col>
-              <Button variant="warning" onClick={addNumber}>
+              <Button variant="warning" onClick={() => setOperator(MULTI)}>
                 *
               </Button>
             </Col>
@@ -116,7 +138,7 @@ function Calculadora() {
               </Button>
             </Col>
             <Col>
-              <Button variant="warning" onClick={addNumber}>
+              <Button variant="warning" onClick={() => setOperator(SUBTRAIR)}>
                 -
               </Button>
             </Col>
@@ -134,12 +156,12 @@ function Calculadora() {
               </Button>
             </Col>
             <Col>
-              <Button variant="success" onClick={addNumber}>
+              <Button variant="success" onClick={() => setOperator("=")}>
                 =
               </Button>
             </Col>
             <Col>
-              <Button variant="warning" onClick={addNumber}>
+              <Button variant="warning" onClick={() => setOperator(SOMA)}>
                 +
               </Button>
             </Col>
